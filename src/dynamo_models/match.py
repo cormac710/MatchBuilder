@@ -5,6 +5,7 @@ from pynamodb import attributes
 from src.dynamo_models.common_meta import CommonMeta
 from src.dynamo_models.common_model import CommonModel
 
+
 class Match(CommonModel):
 
     class Meta(CommonMeta):

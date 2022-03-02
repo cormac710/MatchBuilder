@@ -1,5 +1,6 @@
 from flask.views import MethodView
 
+
 class BaseApi(MethodView):
     api = '/api/'
 

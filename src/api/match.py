@@ -3,6 +3,7 @@ from flask import jsonify, request
 from flask_api import status
 from src.dynamo_models.match import Match
 
+
 class MatchApi(BaseApi):
     endpoint = 'match/'
     @classmethod

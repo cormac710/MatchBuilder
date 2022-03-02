@@ -1,5 +1,6 @@
 from src.utilities.environment_variables import REGION, DYNAMO_URI, WRITE_CAPACITY, READ_CAPACITY
 
+
 class CommonMeta:
     region = REGION
     host = DYNAMO_URI

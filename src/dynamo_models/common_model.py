@@ -1,5 +1,6 @@
 from pynamodb.models import Model
 
+
 class CommonModel(Model):
 
     def as_json(self):
