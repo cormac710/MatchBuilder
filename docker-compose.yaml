@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  dynamodb:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb_mount:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+    networks:
+      - my_network_name
+
+#  backend:
+#    build:
+#      ./src
+#    depends_on:
+#      dynamodb:
+#        condition: service_started
+#    ports:
+#      - "5000:5000"
+#    environment:
+#      - AWS_ACCESS_KEY_ID=dummy
+#      - AWS_SECRET_ACCESS_KEY=dummy
+#      - AWS_REGION=us-east-1
+#    networks:
+#      - my_network_name
+
+networks:
+  my_network_name:
+    name: my_network_name
+    external: false

@@ -1,0 +1,6 @@
+Flask==2.0.3
+Flask-API==3.0.post1
+Flask-cors==3.0.10
+pynamodb==5.2.1
+pytest==7.0.1
+requests==2.27.1
