@@ -1,5 +1,13 @@
+# python
 venv
 *.pytest_cache
-.idea
-*cormac*
 *__pycache__*
+
+# IDE
+.idea
+
+# docker volumes
+/docker
+
+# my own experimenting
+*cormac*
