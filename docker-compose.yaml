@@ -9,8 +9,8 @@ services:
     volumes:
       - "./docker/dynamodb_mount:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
-    networks:
-      - my_network_name
+#    networks:
+#      - my_network_name
 
 #  backend:
 #    build:
@@ -26,8 +26,8 @@ services:
 #      - AWS_REGION=us-east-1
 #    networks:
 #      - my_network_name
-
-networks:
-  my_network_name:
-    name: my_network_name
-    external: false
+#
+#networks:
+#  my_network_name:
+#    name: my_network_name
+#    external: false
