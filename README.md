@@ -1,9 +1,11 @@
 # Local set up
 
 ## Dynamo
-### touch /Users/challina/Documents/ProfileApplication/docker/dynamodb
-### chmod /Users/challina/Documents/ProfileApplication/docker/dynamodb
+```
+# Create directory to mount dynamo 
+mkdir docker
 docker-compose up -d
+```
 
 ## Flask
 
