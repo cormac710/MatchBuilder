@@ -38,7 +38,6 @@ class Person(CommonModel):
 
     class Meta(CommonMeta):
         table_name = 'person'
-    # for auth: https://dev.to/paurakhsharma/flask-rest-api-part-3-authentication-and-authorization-5935
     id = attributes.UnicodeAttribute()
     email = attributes.UnicodeAttribute(hash_key=True)
     first_name = attributes.UnicodeAttribute()
