@@ -12,8 +12,7 @@ class Match(CommonModel):
         table_name = 'match'
 
     id = attributes.UnicodeAttribute()
-    hash_key = attributes.UnicodeAttribute(hash_key=True) # id + venue
-    # Will be updated to have its own class
+    hash_key = attributes.UnicodeAttribute(hash_key=True)  # id + venue
     venue = attributes.UnicodeAttribute()
     players = attributes.ListAttribute()
 
