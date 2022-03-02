@@ -1,8 +1,8 @@
-from src.utilities.environment_variables import REGION, HOST, WRITE_CAPACITY, READ_CAPACITY
+from src.utilities.environment_variables import REGION, DYNAMO_URI, WRITE_CAPACITY, READ_CAPACITY
 
 class CommonMeta:
     region = REGION
-    host = HOST
+    host = DYNAMO_URI
     write_capacity_units = WRITE_CAPACITY
     read_capacity_units = READ_CAPACITY
     aws_access_key_id = "dummy"
