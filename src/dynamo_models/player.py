@@ -79,14 +79,13 @@ class Player(CommonModel):
         self.save()
 
     @classmethod
-    def query_by_range(cls, min_age=None, max_age=None):
+    def query_by_range(cls, min_age=None, max_age=None, limit=100, lastkey=None):
         condition = None
         if min_age:
             condition &= Player.age >= int(min_age)
         if max_age:
             condition &= Player.age <= int(max_age)
-        # User.scan(rate_limit=5)
-        return Player.scan(filter_condition=condition)
+        return Player.scan(filter_condition=condition, limit=int(limit), last_evaluated_key=lastkey)
 
     def as_json(self):
         player = super(Player, self).as_json()

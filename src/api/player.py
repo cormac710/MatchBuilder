@@ -1,6 +1,8 @@
 from src.api.base_api import BaseApi
 from flask import jsonify, request
 from flask_api import status
+
+from src.api.utils.player_utils import PlayerUtils
 from src.dynamo_models.player import Player
 
 
@@ -18,24 +20,34 @@ class PlayerApi(BaseApi):
                          methods=['GET', 'PUT', 'DELETE', 'POST'])
 
     def get(self):
+        # TODO decorator to handle bad requests
         query_params = request.args
         query_keys = query_params.keys()
+
+        # TODO do we want email (@ special char) in url?
         if 'email' in query_params.keys():
-            email = request.args.get('email')
-            player = Player.get_by_email(email)
             return jsonify(
-                Player.list_as_json(player)[0]
+                PlayerUtils.single_person_search(query_params)
             )
 
         if 'min_age' in query_keys or 'max_age' in query_keys:
-            p = Player.query_by_range(
-                query_params.get('min_age', None),
-                query_params.get('max_age', None)
+            query_limit = PlayerUtils.query_limit(query_keys, query_params)
+            queried_players = Player.query_by_range(
+                limit=query_limit,
+                lastkey=query_params.get('last_key', None),
+                min_age=query_params.get('min_age', None),
+                max_age=query_params.get('max_age', None)
             )
+            player_as_list = Player.list_as_json(queried_players)
             return jsonify(
-                Player.list_as_json(p)
+                {
+                    "players": player_as_list,
+                    'len': len(player_as_list),
+                    'last_key': PlayerUtils.last_queried_key_if_exists(queried_players)
+                }
             )
-        return {'error_msg': 'Invalid request from client'}, status.HTTP_400_BAD_REQUEST
+        else:
+            return {'error_msg': 'Invalid request: min_age or max_age must be in the request'}, status.HTTP_400_BAD_REQUEST
 
     def post(self):
         request_body = request.json

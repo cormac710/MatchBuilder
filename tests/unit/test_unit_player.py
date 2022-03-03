@@ -59,5 +59,30 @@ class TestPlayer(BaseTest):
         assert player_with_multiple_skill.skills.shooting == 5
         assert player_with_multiple_skill.skills.defending == 7
 
+    def test_get_players_batches(self):
+        Player.add_item('player1', 'player1@email.com', 22)
+
+        res = Player.query_by_range(None, None, None, None)
+        players = list(res)
+        assert players[0].first_name == 'player1'
+
+        Player.add_item('player2', 'player2@email.com', 24)
+        res = Player.query_by_range()
+        players = list(res)
+        assert players[0].first_name == 'player1'
+        assert players[1].first_name == 'player2'
+
+        Player.add_item('player3', 'player3@email.com', 26)
+        Player.add_item('player4', 'player4@email.com', 31)
+
+        res = Player.query_by_range(limit=3)
+        players = list(res)
+        assert len(players) == 3
+
+        last_key = players[-1].email
+        res = Player.query_by_range(lastkey=last_key)
+        players = list(res)
+        assert len(players) == 1
+
     def tearDown(self):
         self.delete_table(Player)
