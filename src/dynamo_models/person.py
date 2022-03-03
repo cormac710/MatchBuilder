@@ -47,7 +47,7 @@ class Person(CommonModel):
 
     @staticmethod
     def add_item(first_name, email, age, last_name=None, skills=None):
-        # TODO check required params passed, if not throw exception
+        # Can do validation checks here like check the name is str, email is valid email etc...
         condition = None
         condition &= Person.email != email
         skills = Skills.generate_skills(**skills) if skills is not None else {}
@@ -64,8 +64,9 @@ class Person(CommonModel):
             person.save(condition=condition)
             return person
         except PutError as insert_error:
-            # TODO need to update to send message if email exists -> do look up and ammend message
-            # TODO could not save Person -> {...}
+            if insert_error.cause_response_message == 'The conditional request failed':
+                return {'error': f'Person most likely already exists with email: {email}',
+                        'error_code': insert_error.cause_response_code}
             return {'error': insert_error.cause_response_message, 'error_code': insert_error.cause_response_code}
 
     @classmethod

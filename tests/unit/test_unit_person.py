@@ -28,6 +28,12 @@ class TestPerson(BaseTest):
         print(person_from_db_after_delete)
         assert person_from_db_after_delete.total_count == 0
 
+    def test_create_person_already_exists(self):
+        email = 'c@c.c'
+        Person.add_item('cormac', email, 33)
+        person_exists = Person.add_item('cormac', email, 33)
+        assert person_exists['error'] == f'Person most likely already exists with email: {email}'
+
     def test_person_with_skills(self):
         skills_schema = {
             'passing': 10,
