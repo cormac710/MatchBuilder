@@ -11,11 +11,11 @@ I am using dynamoDb which is probably the most popular schemaless DB's hosted by
 Really it's between DocumentDb (postgres under the hood to give MongoDb compatibility) and dynamo.
 But Dynamo has more cool features, im thinking of adding something fun with dynamo streams later on when the basics are covered.
 
-Essentially this is a backend application for creating matches (im a fan of football), for example people trying to organise astro games during the week.
+Essentially this is a backend application for creating matches (im a fan of football), for example players trying to organise astro games during the week.
 
 It's not going to be full of features (at least for now, think of it as basic prototype), my main goal is put together and python application and deploy to AWS.
 
-I think from this approach ill get more benefit that building a load of little perfect features for a real life app which are similar to code in place. E.x really it should be adding people to teams and adding 2 teams to a match but isnt my goal of this project as I could spend months building features but not learning much.
+I think from this approach ill get more benefit that building a load of little perfect features for a real life app which are similar to code in place. E.x really it should be adding players to teams and adding 2 teams to a match but isnt my goal of this project as I could spend months building features but not learning much.
 
 I will be looking into improving and scaling the dynamoDb so features may be edited to work with this in the future
 
@@ -28,8 +28,8 @@ mkdir docker
 docker-compose up -d
 ```
 
-### Add a Person
-Send a POST request to: http://127.0.0.1:5001/api/person/
+### Add a player
+Send a POST request to: http://127.0.0.1:5001/api/player/
 
 You can use the following body (at least until swagger is up and running)
 ```

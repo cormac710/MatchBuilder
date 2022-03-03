@@ -1,5 +1,5 @@
 from src.dynamo_models.match import Match
-from src.dynamo_models.person import Person
+from src.dynamo_models.player import Player
 from tests.api.base_test import BaseTest
 from tests.constants import EMAIL_1, EMAIL_2, EMAIL_3, VENUE_CITY_PARK, VENUE_LARGE_PITCH, VENUE_SMALL_PITCH
 
@@ -8,11 +8,11 @@ class TestMatch(BaseTest):
 
     def setUp(self):
         self.set_up_table(Match)
-        self.set_up_table(Person)
+        self.set_up_table(Player)
 
     def test_crud_match(self):
-        cormac = Person.add_item('cormac', 'c@c.c', 34)
-        john = Person.add_item('john', 'j@c.c', 43)
+        cormac = Player.add_item('cormac', 'c@c.c', 34)
+        john = Player.add_item('john', 'j@c.c', 43)
 
         # create match
         main_match = Match.add_item(VENUE_SMALL_PITCH, [cormac.email, john.email])
@@ -77,4 +77,4 @@ class TestMatch(BaseTest):
 
     def tearDown(self):
         self.delete_table(Match)
-        self.delete_table(Person)
+        self.delete_table(Player)

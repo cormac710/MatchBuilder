@@ -1,12 +1,12 @@
 from src.dynamo_models.match import Match
-from src.dynamo_models.person import Person
+from src.dynamo_models.player import Player
 
 
 def create_tables():
     print('INFO: Creating tables')
-    if not Person.exists():
-        print('Creating Person')
-        Person.create_table()
-        print('Person created')
+    if not Player.exists():
+        print('Creating player')
+        Player.create_table()
+        print('player created')
     if not Match.exists():
         Match.create_table()

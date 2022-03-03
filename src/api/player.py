@@ -1,11 +1,11 @@
 from src.api.base_api import BaseApi
 from flask import jsonify, request
 from flask_api import status
-from src.dynamo_models.person import Person
+from src.dynamo_models.player import Player
 
 
-class PersonApi(BaseApi):
-    endpoint = 'person/'
+class PlayerApi(BaseApi):
+    endpoint = 'player/'
 
     @classmethod
     def register(cls, app):
@@ -22,27 +22,27 @@ class PersonApi(BaseApi):
         query_keys = query_params.keys()
         if 'email' in query_params.keys():
             email = request.args.get('email')
-            person = Person.get_by_email(email)
+            player = Player.get_by_email(email)
             return jsonify(
-                Person.list_as_json(person)[0]
+                Player.list_as_json(player)[0]
             )
 
         if 'min_age' in query_keys or 'max_age' in query_keys:
-            p = Person.query_by_range(
+            p = Player.query_by_range(
                 query_params.get('min_age', None),
                 query_params.get('max_age', None)
             )
             return jsonify(
-                Person.list_as_json(p)
+                Player.list_as_json(p)
             )
         return {'error_msg': 'Invalid request from client'}, status.HTTP_400_BAD_REQUEST
 
     def post(self):
         request_body = request.json
         # add in request validation etc...
-        person = Person.add_item(**request_body)
-        if isinstance(person, Person):
+        player = Player.add_item(**request_body)
+        if isinstance(player, Player):
             return jsonify(
-                person.as_json()
+                player.as_json()
             ), status.HTTP_201_CREATED
-        return person, status.HTTP_400_BAD_REQUEST
+        return player, status.HTTP_400_BAD_REQUEST

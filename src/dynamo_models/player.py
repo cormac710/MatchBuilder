@@ -34,10 +34,10 @@ class Skills(attributes.MapAttribute):
         return [item.as_json() for item in items_itr]
 
 
-class Person(CommonModel):
+class Player(CommonModel):
 
     class Meta(CommonMeta):
-        table_name = 'person'
+        table_name = 'player'
     id = attributes.UnicodeAttribute()
     email = attributes.UnicodeAttribute(hash_key=True)
     first_name = attributes.UnicodeAttribute()
@@ -49,9 +49,9 @@ class Person(CommonModel):
     def add_item(first_name, email, age, last_name=None, skills=None):
         # Can do validation checks here like check the name is str, email is valid email etc...
         condition = None
-        condition &= Person.email != email
+        condition &= Player.email != email
         skills = Skills.generate_skills(**skills) if skills is not None else {}
-        person = Person(
+        player = Player(
             id=str(uuid.uuid4()),
             email=email,
             first_name=first_name,
@@ -61,17 +61,17 @@ class Person(CommonModel):
         )
 
         try:
-            person.save(condition=condition)
-            return person
+            player.save(condition=condition)
+            return player
         except PutError as insert_error:
             if insert_error.cause_response_message == 'The conditional request failed':
-                return {'error': f'Person most likely already exists with email: {email}',
+                return {'error': f'player most likely already exists with email: {email}',
                         'error_code': insert_error.cause_response_code}
             return {'error': insert_error.cause_response_message, 'error_code': insert_error.cause_response_code}
 
     @classmethod
     def get_by_email(cls, email):
-        return Person.query(hash_key=email)
+        return Player.query(hash_key=email)
 
     def update(self, **kwargs):
         for key, val in kwargs.items():
@@ -82,22 +82,22 @@ class Person(CommonModel):
     def query_by_range(cls, min_age=None, max_age=None):
         condition = None
         if min_age:
-            condition &= Person.age >= int(min_age)
+            condition &= Player.age >= int(min_age)
         if max_age:
-            condition &= Person.age <= int(max_age)
+            condition &= Player.age <= int(max_age)
         # User.scan(rate_limit=5)
-        return Person.scan(filter_condition=condition)
+        return Player.scan(filter_condition=condition)
 
     def as_json(self):
-        person = super(Person, self).as_json()
-        if isinstance(person['skills'], Skills):
-            person['skills'] = person['skills'].as_json()
-        return person
+        player = super(Player, self).as_json()
+        if isinstance(player['skills'], Skills):
+            player['skills'] = player['skills'].as_json()
+        return player
 
     @classmethod
     def list_as_json(cls, items_itr):
-        people = super(Person, cls).list_as_json(items_itr)
-        for person in people:
-            if isinstance(person['skills'], Skills):
-                person['skills'] = person['skills'].as_json()
-        return people
+        players = super(Player, cls).list_as_json(items_itr)
+        for player in players:
+            if isinstance(player['skills'], Skills):
+                player['skills'] = player['skills'].as_json()
+        return players
