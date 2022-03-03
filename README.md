@@ -15,7 +15,9 @@ Essentially this is a backend application for creating matches (im a fan of foot
 
 It's not going to be full of features (at least for now, think of it as basic prototype), my main goal is put together and python application and deploy to AWS.
 
-I think from this approach ill get more benefit that building a load of little perfect features which are similar to code in place. E.x really it should be adding people to teams and adding 2 teams to a match but isnt my goal of this project as I could spend months building features but not learning much.
+I think from this approach ill get more benefit that building a load of little perfect features for a real life app which are similar to code in place. E.x really it should be adding people to teams and adding 2 teams to a match but isnt my goal of this project as I could spend months building features but not learning much.
+
+I will be looking into improving and scaling the dynamoDb so features may be edited to work with this in the future
 
 # Local set up
 
