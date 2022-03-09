@@ -1,0 +1,11 @@
+Parameters:
+  TemplateRootUrl:
+    Description: "URL path to where template files are stoed in S3. Format: https://<BUCKET>.s3.<REGION>.amazonaws.com/<PATH>"
+    Type: String
+    Default: "https://cf-templates-match-builder-eu-west-1.s3.eu-west-1.amazonaws.com/match-builder/cf"
+
+Resources:
+  DynamoDb:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${TemplateRootUrl}/dynamodb.yaml"

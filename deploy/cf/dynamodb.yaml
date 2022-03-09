@@ -1,0 +1,28 @@
+Resources:
+  person:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: person
+      AttributeDefinitions:
+        - AttributeName: "email"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "email"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+  Match:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: match
+      AttributeDefinitions:
+        - AttributeName: "hash_key"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "hash_key"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
