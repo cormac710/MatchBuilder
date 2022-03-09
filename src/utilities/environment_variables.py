@@ -1,10 +1,15 @@
 from os import environ
 
-IS_DEV = environ.get('IS_DEV', True)
+# This should never be set to True in real life but easier for me at the minute (its own AWS costs :) )
+IS_DEV = environ.get('IS_DEV', False)
+
+# AWS
+REGION = environ.get('AWS_REGION', 'eu-west-1')
+AWS_ACCESS_KEY = environ.get('AWS_ACCESS_KEY', 'dummy')
+AWS_SECRET_ACCESS_KEY = environ.get('AWS_SECRET_ACCESS_KEY', 'dummy')
 
 # Dynamo vars
-REGION = environ.get('REGION', 'us-east-1')
-DYNAMO_HOST = environ.get('DYNAMO_HOST', '127.0.0.1:8000')
+DYNAMO_HOST = environ.get('DYNAMO_HOST', 'localhost:8000')
 DYNAMO_URI = environ.get('DYNAMO_URI', f'http://{DYNAMO_HOST}') if IS_DEV else \
     f'https://dynamodb.{REGION}.amazonaws.com'
 WRITE_CAPACITY = environ.get('WRITE_CAPACITY', 1)

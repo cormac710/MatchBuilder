@@ -22,6 +22,7 @@ I will be looking into improving and scaling the dynamoDb so features may be edi
 # Local set up
 
 ## Run all in docker
+Do to the docker-compose and make sure `IS_DEV=True` is set in the flask configuration.
 ```
 # Create directory to mount dynamo 
 mkdir docker
@@ -62,3 +63,13 @@ source venv/bin/activate
 pip install -r src/requirements.txt
 python -m src.app
 ```
+
+# Deploy to AWS
+To deploy you must set up and AWS and get your secret and access keys and export and environment variables
+```
+export AWS_ACCESS_KEY=<yur_access_key>
+export AWS_SECRET_ACCESS_KEY=<your_secret_access_key>
+export AWS_DEFAULT_REGION=<your_region>
+```
+
+OR if you have aws cli installed you can just use - aws configure

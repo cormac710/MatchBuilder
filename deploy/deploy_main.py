@@ -10,7 +10,7 @@ from deploy.scripts.cloud_formation_helper import CloudFormationHelper
 from scripts.s3_helper import S3Helper
 
 # constants should be ENV variables OR parameter store etc...
-REGION = 'eu-west-1'
+REGION = os.environ.get('AWS_REGION', 'eu-west-1')
 CF_BUCKET_NAME = 'cf-templates-match-builder-' + REGION
 CF_LOCAL_FOLDER_NAME = '/cf/*'
 S3_KEY_ROOT = 'match-builder/cf'
