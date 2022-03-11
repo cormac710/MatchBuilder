@@ -9,3 +9,22 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/dynamodb.yaml"
+
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${TemplateRootUrl}/vpc.yaml"
+
+  Subnets:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${TemplateRootUrl}/subnets.yaml"
+    DependsOn: VPC
+
+  SecGroups:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${TemplateRootUrl}/security_groups.yaml"
+      Parameters:
+        FlaskVpc: !ImportValue "FlaskVpc"
+    DependsOn: Subnets

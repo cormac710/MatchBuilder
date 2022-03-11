@@ -71,5 +71,3 @@ export AWS_ACCESS_KEY=<yur_access_key>
 export AWS_SECRET_ACCESS_KEY=<your_secret_access_key>
 export AWS_DEFAULT_REGION=<your_region>
 ```
-
-OR if you have aws cli installed you can just use - aws configure

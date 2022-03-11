@@ -1,0 +1,12 @@
+Resources:
+  FlaskVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "172.31.0.0/16"
+
+Outputs:
+  FlaskVpc:
+    Description: The ID of the VPC
+    Value: !Ref FlaskVpc
+    Export:
+      Name: "FlaskVpc"

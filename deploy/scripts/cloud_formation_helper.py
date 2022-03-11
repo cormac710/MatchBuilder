@@ -56,8 +56,8 @@ class CloudFormationHelper:
     def wait_for_stack_upgrade_create_status(self, status_to_wait_for, stack_name=None, time_to_sleep=5):
         stack_status = self.stack_status(stack_name)
         while stack_status != status_to_wait_for:
-            if stack_status in ['ROLLBACK_IN_PROGRESS', 'ROLLBACK_COMPLETE']:
-                print(f'ERROR: stack entered status {stack_status}, this is incorrect')
+            if stack_status in ['ROLLBACK_IN_PROGRESS', 'ROLLBACK_COMPLETE', 'UPDATE_ROLLBACK_COMPLETE']:
+                print(f'ERROR: stack entered status {stack_status}, this is incorrect please investigate!!!')
                 return False
             print(f'INFO: stack in status {stack_status}, waiting another {time_to_sleep}s')
             time.sleep(time_to_sleep)

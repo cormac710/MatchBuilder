@@ -24,7 +24,7 @@ def create_templates_bucket_and_upload_templates():
     s3.create_bucket()
     template_location = str(pathlib.Path(__file__).parent.resolve()) + CF_LOCAL_FOLDER_NAME
     for file in glob.glob(template_location):
-        key = S3_KEY_ROOT + os.path.basename(file)
+        key = S3_KEY_ROOT + '/' + os.path.basename(file)
         s3.upload(file, key)
 
 
