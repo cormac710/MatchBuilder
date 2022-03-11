@@ -25,6 +25,4 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/security_groups.yaml"
-      Parameters:
-        FlaskVpc: !ImportValue "FlaskVpc"
-    DependsOn: Subnets
+    DependsOn: VPC

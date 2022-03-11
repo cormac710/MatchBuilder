@@ -2,5 +2,5 @@ Resources:
   FlaskSubnets:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !ImportValue "FlaskVpc"
-      CidrBlock: 172.31.0.1/24
+      VpcId: !ImportValue "Flask-Vpc"
+      CidrBlock: 172.31.0.1/28

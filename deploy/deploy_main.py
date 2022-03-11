@@ -16,7 +16,7 @@ CF_LOCAL_FOLDER_NAME = '/cf/*'
 S3_KEY_ROOT = 'match-builder/cf'
 MAIN_CF_FILE_NAME = '/main.yaml'
 # This will definitely need to be a parameter - will be test stacks i.e. based off branch name (not main)
-MAIN_STACK_NAME = 'MatchBuilder'
+MAIN_STACK_NAME = 'Match-Builder'
 
 
 def create_templates_bucket_and_upload_templates():
