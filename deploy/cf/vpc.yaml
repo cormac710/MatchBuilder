@@ -9,4 +9,4 @@ Outputs:
     Description: The ID of the VPC
     Value: !Ref FlaskVpc
     Export:
-      Name: "Flask-Vpc"
+      Name: "FlaskVpc"

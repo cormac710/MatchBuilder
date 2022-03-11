@@ -3,7 +3,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow http to client host
-      VpcId: !ImportValue "Flask-Vpc"
+      VpcId: !ImportValue "FlaskVpc"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
