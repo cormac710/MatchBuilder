@@ -1,6 +1,37 @@
+# Please note for now im only create 1 private and 1 public
+# If/when we want to do proper scaling/fail over we should have subnets for each AZ
+# currently we will only be deploying to 1 AZ
+# When we have a working application and deployment we will worry about better/proper failover
+# we can still using scaling (asg) but if the AZ we are using goes down we are in trouble :) I think for now we are alright
+# FYI I would never dream of leaving it like this for production!
 Resources:
-  FlaskSubnets:
+  FlaskSubnetPublic:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !ImportValue "FlaskVpc"
-      CidrBlock: 172.31.0.1/28
+      VpcId: !ImportValue "MatchBuilderVpc"
+      CidrBlock: "10.1.10.0/24"
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-Falsk-Public
+
+  FlaskSubnetPrivate:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !ImportValue "MatchBuilderVpc"
+      CidrBlock: "10.1.50.0/24"
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-Falsk-Private
+
+Outputs:
+  FlaskSubnetPublic:
+    Description: The ID of the Public subnet for flask
+    Value: !Ref FlaskSubnetPublic
+    Export:
+      Name: "FlaskSubnetPublic"
+
+  FlaskSubnetPrivate:
+    Description: The ID of the private subnet for flask
+    Value: !Ref FlaskSubnetPrivate
+    Export:
+      Name: "FlaskSubnetPrivate"

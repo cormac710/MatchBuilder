@@ -1,12 +1,30 @@
 Resources:
-  FlaskVpc:
+  MatchBuilderVpc:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: "172.31.0.1/16"
+      CidrBlock: "10.1.0.0/16"
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    DependsOn: MatchBuilderVpc
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MatchBuilderVpc
+      InternetGatewayId: !Ref InternetGateway
 
 Outputs:
-  FlaskVpc:
+  MatchBuilderVpc:
     Description: The ID of the VPC
-    Value: !Ref FlaskVpc
+    Value: !Ref MatchBuilderVpc
     Export:
-      Name: "FlaskVpc"
+      Name: "MatchBuilderVpc"
+
+  MatchBuilderIGW:
+    Description: The ID of the Internet Gateway
+    Value: !Ref InternetGateway
+    Export:
+      Name: "MatchBuilderIGW"

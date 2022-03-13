@@ -66,6 +66,9 @@ python -m src.app
 
 # Deploy to AWS
 To deploy you must set up and AWS and get your secret and access keys and export and environment variables
+
+Also note, only available to deploy in eu-west-1 region (Ireland). Deploying to other regions is in the TODO column. 
+I am more interested in getting a basic working app and deploying up and running at the minute
 ```
 export AWS_ACCESS_KEY=<yur_access_key>
 export AWS_SECRET_ACCESS_KEY=<your_secret_access_key>
