@@ -1,3 +1,5 @@
+# Going on holidays for the next 10 days so if something here look unfinished that is why :) 
+
 # Why???
 The reason for this project is I felt like building a project with flask to brush up on it. 
 
