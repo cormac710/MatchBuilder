@@ -7,7 +7,7 @@ import os
 import sys
 
 from deploy.scripts.cloud_formation_helper import CloudFormationHelper
-from scripts.s3_helper import S3Helper
+from deploy.scripts.s3_helper import S3Helper
 
 # constants should be ENV variables OR parameter store etc...
 REGION = os.environ.get('AWS_REGION', 'eu-west-1')
@@ -16,13 +16,14 @@ CF_LOCAL_FOLDER_NAME = '/cf/*'
 S3_KEY_ROOT = 'match-builder/cf'
 MAIN_CF_FILE_NAME = '/main.yaml'
 # This will definitely need to be a parameter - will be test stacks i.e. based off branch name (not main)
-MAIN_STACK_NAME = 'Match-Builder'
+MAIN_STACK_NAME = 'MatchBuilder'
 
 
 def create_templates_bucket_and_upload_templates():
     s3 = S3Helper(CF_BUCKET_NAME, REGION)
     s3.create_bucket()
     template_location = str(pathlib.Path(__file__).parent.resolve()) + CF_LOCAL_FOLDER_NAME
+    print(f'INFO: TEMPLATE: {template_location}')
     for file in glob.glob(template_location):
         key = S3_KEY_ROOT + '/' + os.path.basename(file)
         s3.upload(file, key)
@@ -61,3 +62,6 @@ def check_stack_status_code(stack_create_response):
 
 create_templates_bucket_and_upload_templates()
 create_update_stack()
+# INFO: TEMPLATE: /Users/cormac/Documents/code/MatchBuilder/deploy/cf/*
+# INFO: Uploading file /Users/cormac/Documents/code/MatchBuilder/deploy/cf/security_groups.yaml to bucket cf-templates-match-builder-eu-west-1 and key match-builder/cf/security_groups.yaml
+# INFO: Uploading file /Users/cormac/Documents/code/MatchBuilder/deploy/cf/main.yaml to bucket cf-templates-match-builder-eu-west-1 and key match-builder/cf/main.yaml
