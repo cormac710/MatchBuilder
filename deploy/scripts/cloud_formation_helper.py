@@ -25,7 +25,8 @@ class CloudFormationHelper:
         return self.client.update_stack(
             StackName=self.main_stack_name,
             TemplateURL=self.main_template_location,
-            Parameters=self._generate_stack_parameters()
+            Parameters=self._generate_stack_parameters(),
+            Capabilities=['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM']
         )
 
     def _generate_stack_parameters(self):
@@ -41,7 +42,8 @@ class CloudFormationHelper:
         return self.client.create_stack(
             StackName=self.main_stack_name,
             TemplateURL=self.main_template_location,
-            Parameters=self._generate_stack_parameters()
+            Parameters=self._generate_stack_parameters(),
+            Capabilities=['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM']
         )
 
     def describe_stack(self, stack_name=None):

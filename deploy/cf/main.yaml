@@ -33,8 +33,15 @@ Resources:
       TemplateURL: !Sub "${TemplateRootUrl}/security_groups.yaml"
     DependsOn: VPC
 
-  Ec2:
+#  NOTE: Deploys a single Ec2 instance, we will move on to deploying using EC2
+#  Ec2:
+#    Type: AWS::CloudFormation::Stack
+#    Properties:
+#      TemplateURL: !Sub "${TemplateRootUrl}/ec2.yaml"
+#    DependsOn: RouteTables
+
+  ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateRootUrl}/ec2.yaml"
+      TemplateURL: !Sub "${TemplateRootUrl}/ecs.yaml"
     DependsOn: RouteTables

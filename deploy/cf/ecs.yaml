@@ -1,0 +1,76 @@
+Mappings:
+  RegionsAMI:
+    eu-west-1:
+      "AMI": "ami-0db188056a6ff81ae"
+
+Resources:
+  MatchBuilderFlaskBackEndCluser:
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: 'MatchBuilderFlaskBackEndCluster'
+
+#  WIP
+#  MatchBuilderFlaskBackEndService:
+#    Type: AWS::ECS::Service
+#    Properties:
+#      ServiceName: 'MatchBuilder-Flask-Backend'
+#      LaunchType: 'EC2'
+#      Cluster: !Ref MatchBuilderFlaskBackEndCluser
+#      TaskDefinition: !Ref MatchBuilderFlaskBackEndTaskDefinition
+
+  MatchBuilderFlaskBackEndTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - "EC2"
+      ContainerDefinitions:
+        - Name: "my-app"
+#          PortMappings:
+#            - ContainerPort: 50001
+#              HostPort: 80
+#          MountPoints:
+#            - SourceVolume: "my-vol"
+#              ContainerPath: "/var/www/my-vol"
+          Image: "amazon/amazon-ecs-sample"
+          Cpu: 256
+          EntryPoint:
+            - "/usr/sbin/apache2"
+            - "-D"
+            - "FOREGROUND"
+          Memory: 512
+          Essential: true
+
+  FlaskBackendInstanceTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !FindInMap [ RegionsAMI, !Ref "AWS::Region", AMI ]
+        InstanceType: t2.micro
+        KeyName: "matchbuilder"
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: "true"
+            DeviceIndex: "0"
+            Groups:
+              - !ImportValue FlaskSecGroup
+            SubnetId: !ImportValue FlaskSubnetPublic
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            set -x
+            echo ECS_CLUSTER=MatchBuilderFlaskBackEndCluser >> /etc/ecs/ecs.config
+            yum install httpd -y
+            service httpd start
+            echo "<html><body><h1>Testing!!!<h1></body></html>" > /var/www/html/index.html
+
+  FlaskBackEndASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: 'MatchBuilder-Flask-Backend-ASG'
+      DesiredCapacity: 1
+      MinSize: '1'
+      MaxSize: '2'
+      VPCZoneIdentifier:
+        - !ImportValue FlaskSubnetPublic
+      LaunchTemplate:
+        LaunchTemplateId: !Ref FlaskBackendInstanceTemplate
+        Version: !GetAtt FlaskBackendInstanceTemplate.LatestVersionNumber

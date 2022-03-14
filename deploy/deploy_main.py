@@ -62,6 +62,3 @@ def check_stack_status_code(stack_create_response):
 
 create_templates_bucket_and_upload_templates()
 create_update_stack()
-# INFO: TEMPLATE: /Users/cormac/Documents/code/MatchBuilder/deploy/cf/*
-# INFO: Uploading file /Users/cormac/Documents/code/MatchBuilder/deploy/cf/security_groups.yaml to bucket cf-templates-match-builder-eu-west-1 and key match-builder/cf/security_groups.yaml
-# INFO: Uploading file /Users/cormac/Documents/code/MatchBuilder/deploy/cf/main.yaml to bucket cf-templates-match-builder-eu-west-1 and key match-builder/cf/main.yaml

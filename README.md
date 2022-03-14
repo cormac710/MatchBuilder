@@ -1,3 +1,5 @@
+# Going on holidays for the next 10 days so if something here look unfinished that is why :) 
+
 # Why???
 The reason for this project is I felt like building a project with flask to brush up on it. 
 
@@ -79,6 +81,8 @@ Run "deploy/deploy_main.py" to deploy services to AWS (still in being developed 
 
 Some new requirements are needed for this, at the minute installing them into the existing venv but in the future I plan
 to deploy via docker so this is only a temporary measure until I get the basics working.
+
+Currently it deploys all services and if one fails, all are rolled. In a microservies architecture, services should be able to be upgraded independently but dont worry Ill get there :) 
 
 ```commandline
 MatchBuilder % pip3 install -r deploy/deploy_requirements.txt
