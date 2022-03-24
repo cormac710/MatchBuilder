@@ -7,7 +7,7 @@ Resources:
   MatchBuilderFlaskBackEndCluser:
     Type: 'AWS::ECS::Cluster'
     Properties:
-      ClusterName: 'MatchBuilderFlaskBackEndCluster'
+      ClusterName: 'MatchBuilderFlaskBackEndCluser'
 
 #  WIP
 #  MatchBuilderFlaskBackEndService:
@@ -45,8 +45,10 @@ Resources:
     Properties:
       LaunchTemplateData:
         ImageId: !FindInMap [ RegionsAMI, !Ref "AWS::Region", AMI ]
-        InstanceType: t2.micro
+        InstanceType: 't2.micro'
         KeyName: "matchbuilder"
+        IamInstanceProfile:
+          Arn: !GetAtt ECSIAMProfile.Arn
         NetworkInterfaces:
           - AssociatePublicIpAddress: "true"
             DeviceIndex: "0"
@@ -62,10 +64,40 @@ Resources:
             service httpd start
             echo "<html><body><h1>Testing!!!<h1></body></html>" > /var/www/html/index.html
 
+
+  ECSIAMProfile:
+    Type: AWS::IAM::InstanceProfile
+    DependsOn: BackendServiceRole
+    Properties:
+      Path: /
+      Roles:
+        - "BackendServiceRole"
+
+  BackendServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: BackendServiceRole
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+                - "ecs-tasks.amazonaws.com"
+                - "dynamodb.amazonaws.com"
+                - "ecs.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+
   FlaskBackEndASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AutoScalingGroupName: 'MatchBuilder-Flask-Backend-ASG'
+      ServiceName: !Ref MatchBuilderFlaskBackEndService
       DesiredCapacity: 1
       MinSize: '1'
       MaxSize: '2'
