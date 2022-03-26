@@ -17,7 +17,7 @@ class CloudFormationHelper:
             data = self.client.describe_stacks(StackName=self.main_stack_name)
         except ClientError:
             # Does does not exist, will create
-            print('CLIENT ERROR !!!')
+            print('Stack not exists...')
             return False
         return data['Stacks'][0]['StackStatus']
 

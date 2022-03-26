@@ -40,7 +40,7 @@ Resources:
 #      TemplateURL: !Sub "${TemplateRootUrl}/ec2.yaml"
 #    DependsOn: RouteTables
 
-  ECS:
+  FlaskECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/ecs.yaml"

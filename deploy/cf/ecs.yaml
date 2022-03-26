@@ -1,7 +1,7 @@
 Mappings:
   RegionsAMI:
     eu-west-1:
-      "AMI": "ami-0db188056a6ff81ae"
+      "AMI": "ami-0c235c5b4bd152826"
 
 Resources:
   MatchBuilderFlaskBackEndCluser:
@@ -9,43 +9,40 @@ Resources:
     Properties:
       ClusterName: 'MatchBuilderFlaskBackEndCluser'
 
-#  WIP
-#  MatchBuilderFlaskBackEndService:
-#    Type: AWS::ECS::Service
-#    Properties:
-#      ServiceName: 'MatchBuilder-Flask-Backend'
-#      LaunchType: 'EC2'
-#      Cluster: !Ref MatchBuilderFlaskBackEndCluser
-#      TaskDefinition: !Ref MatchBuilderFlaskBackEndTaskDefinition
+  MatchBuilderFlaskBackEndService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      ServiceName: 'MatchBuilderFlaskBackEndService'
+      LaunchType: 'EC2'
+      Cluster: !Ref MatchBuilderFlaskBackEndCluser
+      TaskDefinition: !Ref MatchBuilderTaskDefinition
 
-  MatchBuilderFlaskBackEndTaskDefinition:
-    Type: AWS::ECS::TaskDefinition
+  MatchBuilderTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
     Properties:
       RequiresCompatibilities:
         - "EC2"
+      ExecutionRoleArn: !Ref BackendServiceRole
       ContainerDefinitions:
-        - Name: "my-app"
-#          PortMappings:
-#            - ContainerPort: 50001
-#              HostPort: 80
-#          MountPoints:
-#            - SourceVolume: "my-vol"
-#              ContainerPath: "/var/www/my-vol"
-          Image: "amazon/amazon-ecs-sample"
+        - Name: "flask-backend"
+          PortMappings:
+            - ContainerPort: '5001'
+              HostPort: '80'
+          Image: "664664196635.dkr.ecr.eu-west-1.amazonaws.com/match-builder"
           Cpu: 256
-          EntryPoint:
-            - "/usr/sbin/apache2"
-            - "-D"
-            - "FOREGROUND"
           Memory: 512
           Essential: true
+          Environment:
+            - Name: AWS_REGION
+              Value: !Ref "AWS::Region"
 
   FlaskBackendInstanceTemplate:
-    Type: AWS::EC2::LaunchTemplate
+    Type: 'AWS::EC2::LaunchTemplate'
     Properties:
       LaunchTemplateData:
         ImageId: !FindInMap [ RegionsAMI, !Ref "AWS::Region", AMI ]
         InstanceType: 't2.micro'
+        # keypair will never be used for production!
         KeyName: "matchbuilder"
         IamInstanceProfile:
           Arn: !GetAtt ECSIAMProfile.Arn
@@ -59,14 +56,14 @@ Resources:
           Fn::Base64: !Sub |
             #!/bin/bash
             set -x
+            sudo su -
+            mkdir /etc/ecs/
+            touch ecs.config
             echo ECS_CLUSTER=MatchBuilderFlaskBackEndCluser >> /etc/ecs/ecs.config
-            yum install httpd -y
-            service httpd start
-            echo "<html><body><h1>Testing!!!<h1></body></html>" > /var/www/html/index.html
 
 
   ECSIAMProfile:
-    Type: AWS::IAM::InstanceProfile
+    Type: 'AWS::IAM::InstanceProfile'
     DependsOn: BackendServiceRole
     Properties:
       Path: /
@@ -92,15 +89,38 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+  FlaskCapacityProvider:
+    Type: 'AWS::ECS::CapacityProvider'
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref FlaskBackEndASG
+        ManagedScaling:
+          Status: 'ENABLED'
+          TargetCapacity: 100
+        ManagedTerminationProtection: 'ENABLED'
+      Name: 'FlaskCapacityProvider'
+
+  ClusterCPAssociation:
+    Type: "AWS::ECS::ClusterCapacityProviderAssociations"
+    Properties:
+      Cluster: !Ref MatchBuilderFlaskBackEndCluser
+      CapacityProviders:
+        - !Ref FlaskCapacityProvider
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          Weight: 1
+          CapacityProvider: !Ref FlaskCapacityProvider
 
   FlaskBackEndASG:
-    Type: AWS::AutoScaling::AutoScalingGroup
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
       AutoScalingGroupName: 'MatchBuilder-Flask-Backend-ASG'
-      ServiceName: !Ref MatchBuilderFlaskBackEndService
+      NewInstancesProtectedFromScaleIn: true
       DesiredCapacity: 1
       MinSize: '1'
-      MaxSize: '2'
+      MaxSize: '1'
       VPCZoneIdentifier:
         - !ImportValue FlaskSubnetPublic
       LaunchTemplate:

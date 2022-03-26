@@ -7,5 +7,6 @@ class CommonMeta:
     host = DYNAMO_URI
     write_capacity_units = WRITE_CAPACITY
     read_capacity_units = READ_CAPACITY
-    aws_access_key_id = AWS_ACCESS_KEY
-    aws_secret_access_key = AWS_SECRET_ACCESS_KEY
+    if AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY:
+        aws_access_key_id = AWS_ACCESS_KEY
+        aws_secret_access_key = AWS_SECRET_ACCESS_KEY
