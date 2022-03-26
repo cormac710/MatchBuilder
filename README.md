@@ -1,5 +1,3 @@
-# Going on holidays for the next 10 days so if something here look unfinished that is why :) 
-
 # Why???
 The reason for this project is I felt like building a project with flask to brush up on it. 
 
@@ -66,7 +64,7 @@ pip install -r src/requirements.txt
 python -m src.app
 ```
 
-# Deploy to AWS
+# Deploy to AWS 
 To deploy you must set up and AWS and get your secret and access keys and export and environment variables
 
 Also note, only available to deploy in eu-west-1 region (Ireland). Deploying to other regions is in the TODO column. 
@@ -88,3 +86,15 @@ Currently it deploys all services and if one fails, all are rolled. In a microse
 MatchBuilder % pip3 install -r deploy/deploy_requirements.txt
 MatchBuilder % python -m deploy.deploy_main
 ```
+
+## Deploy Backend using Flask and ECS, WHY?
+This is phase one, EC2 to being phased out by serverless architectures or using Fargate.
+
+I started with this because its very popular and is still used a lot and practice migrating to serverless.
+
+Why EC2 over Fargate, because EC2 is harder to deploy than Fargate. If you can deploy using EC2 you can do Fargate.
+
+## Deploy Backend using lambda
+Because serverless!!! 
+
+TODO
