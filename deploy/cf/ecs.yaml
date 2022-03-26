@@ -1,0 +1,128 @@
+Mappings:
+  RegionsAMI:
+    eu-west-1:
+      "AMI": "ami-0c235c5b4bd152826"
+
+Resources:
+  MatchBuilderFlaskBackEndCluser:
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: 'MatchBuilderFlaskBackEndCluser'
+
+  MatchBuilderFlaskBackEndService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      ServiceName: 'MatchBuilderFlaskBackEndService'
+      LaunchType: 'EC2'
+      Cluster: !Ref MatchBuilderFlaskBackEndCluser
+      TaskDefinition: !Ref MatchBuilderTaskDefinition
+
+  MatchBuilderTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      RequiresCompatibilities:
+        - "EC2"
+      ExecutionRoleArn: !Ref BackendServiceRole
+      ContainerDefinitions:
+        - Name: "flask-backend"
+          PortMappings:
+            - ContainerPort: '5001'
+              HostPort: '80'
+          Image: "664664196635.dkr.ecr.eu-west-1.amazonaws.com/match-builder"
+          Cpu: 256
+          Memory: 512
+          Essential: true
+          Environment:
+            - Name: AWS_REGION
+              Value: !Ref "AWS::Region"
+
+  FlaskBackendInstanceTemplate:
+    Type: 'AWS::EC2::LaunchTemplate'
+    Properties:
+      LaunchTemplateData:
+        ImageId: !FindInMap [ RegionsAMI, !Ref "AWS::Region", AMI ]
+        InstanceType: 't2.micro'
+        # keypair will never be used for production!
+        KeyName: "matchbuilder"
+        IamInstanceProfile:
+          Arn: !GetAtt ECSIAMProfile.Arn
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: "true"
+            DeviceIndex: "0"
+            Groups:
+              - !ImportValue FlaskSecGroup
+            SubnetId: !ImportValue FlaskSubnetPublic
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            set -x
+            sudo su -
+            mkdir /etc/ecs/
+            touch ecs.config
+            echo ECS_CLUSTER=MatchBuilderFlaskBackEndCluser >> /etc/ecs/ecs.config
+
+
+  ECSIAMProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    DependsOn: BackendServiceRole
+    Properties:
+      Path: /
+      Roles:
+        - "BackendServiceRole"
+
+  BackendServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: BackendServiceRole
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+                - "ecs-tasks.amazonaws.com"
+                - "dynamodb.amazonaws.com"
+                - "ecs.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+  FlaskCapacityProvider:
+    Type: 'AWS::ECS::CapacityProvider'
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref FlaskBackEndASG
+        ManagedScaling:
+          Status: 'ENABLED'
+          TargetCapacity: 100
+        ManagedTerminationProtection: 'ENABLED'
+      Name: 'FlaskCapacityProvider'
+
+  ClusterCPAssociation:
+    Type: "AWS::ECS::ClusterCapacityProviderAssociations"
+    Properties:
+      Cluster: !Ref MatchBuilderFlaskBackEndCluser
+      CapacityProviders:
+        - !Ref FlaskCapacityProvider
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          Weight: 1
+          CapacityProvider: !Ref FlaskCapacityProvider
+
+  FlaskBackEndASG:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      AutoScalingGroupName: 'MatchBuilder-Flask-Backend-ASG'
+      NewInstancesProtectedFromScaleIn: true
+      DesiredCapacity: 1
+      MinSize: '1'
+      MaxSize: '1'
+      VPCZoneIdentifier:
+        - !ImportValue FlaskSubnetPublic
+      LaunchTemplate:
+        LaunchTemplateId: !Ref FlaskBackendInstanceTemplate
+        Version: !GetAtt FlaskBackendInstanceTemplate.LatestVersionNumber

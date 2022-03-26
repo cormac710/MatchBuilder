@@ -6,35 +6,35 @@ Parameters:
 
 Resources:
   DynamoDb:
-    Type: AWS::CloudFormation::Stack
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/dynamodb.yaml"
 
   VPC:
-    Type: AWS::CloudFormation::Stack
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/vpc.yaml"
 
   Subnets:
-    Type: AWS::CloudFormation::Stack
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/subnets.yaml"
     DependsOn: VPC
 
   RouteTables:
-    Type: AWS::CloudFormation::Stack
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/routes.yaml"
     DependsOn: Subnets
 
   SecGroups:
-    Type: AWS::CloudFormation::Stack
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub "${TemplateRootUrl}/security_groups.yaml"
     DependsOn: VPC
 
-  Ec2:
-    Type: AWS::CloudFormation::Stack
+  FlaskECS:
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub "${TemplateRootUrl}/ec2.yaml"
+      TemplateURL: !Sub "${TemplateRootUrl}/ecs.yaml"
     DependsOn: RouteTables
